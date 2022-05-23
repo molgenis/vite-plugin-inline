@@ -35,12 +35,12 @@ Execute `npm run build` to build a stand-alone .html.
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="data:,">
   <title>Example</title>
-  <script type="application/gzip" class="ldr-js">...</script>
-  <script type="application/gzip" class="ldr-css">...</script>
+  <script type="application/gzip" class="ldr-js"><!-- put your base85 encoded gzipped JavaScript here --></script>
+  <script type="application/gzip" class="ldr-css"><!-- put your base85 encoded CSS here --></script>
 </head>
 <body>
   <div id="app"></div>
-  <script id="ldr">...</script>
+  <script id="ldr"><!-- loader is injected here that unzips and decodes data --></script>
 </body>
 </html>
 ```
