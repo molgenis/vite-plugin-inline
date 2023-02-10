@@ -48,7 +48,7 @@ export default function inline(): Plugin {
           } else if (value.fileName.match(/assets\/index\..*\.js/)) {
             html = inlineJs(html, value as OutputChunk);
           } else if (value.fileName.match(/assets\/index\..*\.css/)) {
-            html = inlineCss(html, value as OutputAsset);
+            html = inlineCss(html, value as unknown as OutputAsset);
           }
           // prevent rollup from outputting inline bundles
           delete ctx.bundle[value.fileName];
