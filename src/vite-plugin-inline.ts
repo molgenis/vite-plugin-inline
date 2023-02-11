@@ -43,11 +43,11 @@ export default function inline(): Plugin {
 
         const tags = [];
         for (const [, value] of Object.entries(ctx.bundle)) {
-          if (value.fileName.match(/assets\/loader\..*\.js/)) {
+          if (value.fileName.match(/assets\/loader-.*\.js/)) {
             tags.push(createLoaderTag(html, value as OutputChunk));
-          } else if (value.fileName.match(/assets\/index\..*\.js/)) {
+          } else if (value.fileName.match(/assets\/index-.*\.js/)) {
             html = inlineJs(html, value as OutputChunk);
-          } else if (value.fileName.match(/assets\/index\..*\.css/)) {
+          } else if (value.fileName.match(/assets\/index-.*\.css/)) {
             html = inlineCss(html, value as unknown as OutputAsset);
           }
           // prevent rollup from outputting inline bundles
