@@ -5,7 +5,7 @@ node_js:
   - lts/*
 branches:
   only:
-    - master
+    - main
     - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 cache:
   npm: false
