@@ -1,6 +1,6 @@
 {
   "name": "@molgenis/vite-plugin-inline",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Vite plugin that embeds .js and .css as base85 data ",
   "keywords": [
     "vite",
@@ -34,18 +34,18 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/node": "^18.13.0",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "@typescript-eslint/parser": "^5.51.0",
-    "@vitest/coverage-c8": "^0.28.4",
-    "eslint": "^8.33.0",
-    "eslint-config-prettier": "^8.6.0",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "@vitest/coverage-c8": "^0.30.1",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.1",
-    "vitest": "^0.28.4"
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1",
+    "vitest": "^0.30.1"
   },
   "dependencies": {
     "fflate": "^0.7.4"
