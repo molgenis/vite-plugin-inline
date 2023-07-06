@@ -12,7 +12,8 @@ cache:
   directories:
     - "~/.pnpm-store"
 before_install:
-  - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@7
+  - corepack enable
+  - corepack prepare pnpm@latest-8 --activate
   - pnpm config set store-dir ~/.pnpm-store
 install:
   - pnpm install
