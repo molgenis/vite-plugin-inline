@@ -1,6 +1,6 @@
 {
   "name": "@molgenis/vite-plugin-inline",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Vite plugin that embeds .js and .css as base85 data ",
   "keywords": [
     "vite",
@@ -10,9 +10,9 @@
     "prepack": "tsc",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts",
-    "test": "vitest run --config vitest.config.cts",
-    "test:watch": "vitest --config vitest.config.cts",
-    "coverage": "vitest --config vitest.config.cts run --coverage",
+    "test": "vitest run --config vitest.config.mts",
+    "test:watch": "vitest --config vitest.config.mts",
+    "coverage": "vitest --config vitest.config.mts run --coverage",
     "prepare": "husky install"
   },
   "repository": {
@@ -34,20 +34,20 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/node": "^20.6.0",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "@vitest/coverage-v8": "^0.34.4",
-    "eslint": "^8.49.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
+    "@types/node": "^20.10.3",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitest/coverage-v8": "^1.0.1",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "husky": "^8.0.3",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.9",
-    "vitest": "^0.34.4"
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.6",
+    "vitest": "^1.0.1"
   },
   "dependencies": {
-    "fflate": "^0.8.0"
+    "fflate": "^0.8.1"
   }
 }
