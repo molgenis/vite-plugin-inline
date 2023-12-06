@@ -1,4 +1,5 @@
 {
+  "moduleResolution": "bundler",
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",
