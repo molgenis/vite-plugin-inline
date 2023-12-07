@@ -1,14 +1,17 @@
 {
+  "include": ["src"],
   "compilerOptions": {
+    "outDir": "dist",
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
     "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "sourceMap": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
-  },
-  "include": [
-    "src/**/*"
-  ],
+    "baseUrl": ".",
+    "resolveJsonModule": true
+  }
 }

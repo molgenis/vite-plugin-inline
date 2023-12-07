@@ -18,6 +18,8 @@ install:
 script:
   - pnpm run lint
   - pnpm run coverage
+before_deploy:
+  - pnpm run build
 deploy:
   provider: npm
   api_token:
