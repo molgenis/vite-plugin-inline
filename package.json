@@ -1,6 +1,6 @@
 {
   "name": "@molgenis/vite-plugin-inline",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Vite plugin that embeds .js and .css as base85 data ",
   "type": "module",
   "sideEffects": false,
