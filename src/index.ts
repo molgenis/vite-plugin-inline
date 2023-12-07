@@ -37,8 +37,8 @@ export default function inline(): Plugin {
   return {
     name: "vite:inline",
     transformIndexHtml: {
-      enforce: "post",
-      transform(html: string, ctx?: IndexHtmlTransformContext): IndexHtmlTransformResult {
+      order: "post",
+      handler(html: string, ctx?: IndexHtmlTransformContext): IndexHtmlTransformResult {
         if (!ctx || !ctx.bundle) return html;
 
         const tags = [];
