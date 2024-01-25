@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "prepack": "tsc",
+    "prepack": "pnpm build",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "test": "vitest run --config vitest.config.mts",
