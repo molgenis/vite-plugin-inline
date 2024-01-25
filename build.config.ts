@@ -1,6 +1,6 @@
 // derived from https://github.com/vitejs/vite-plugin-vue/blob/plugin-vue%405.0.0-beta.0/packages/plugin-vue/build.config.ts
 export default {
-    entries: ['src/index'],
+    entries: ['src/index', 'src/loader'],
     externals: ['vite'],
     clean: true,
     declaration: 'compatible',
