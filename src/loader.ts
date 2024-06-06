@@ -11,6 +11,8 @@ function decodeScript(script: HTMLScriptElement): void {
   const text = script.textContent;
   if (text !== null) {
     const textDecoded = textDecoder.decode(gunzipSync(dec(text)));
+    // see https://github.com/v8/v8/commit/ea56bf5513d0cbd2a35a9035c5c2996272b8b728
+    if (textDecoded.length === 0) throw new Error("maximum string length exceeded");
     let element: HTMLElement;
     const className = script.className;
     if (className === "ldr-js") {
