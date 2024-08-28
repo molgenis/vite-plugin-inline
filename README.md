@@ -13,6 +13,10 @@ import inlinePlugin from "@molgenis/vite-plugin-inline/src/vite-plugin-inline.js
 
 export default defineConfig({
   plugins: [inlinePlugin()],
+  esbuild: {
+    // @molgenis/vite-plugin-inline requires ascii input and cannot handle UTF-8 input
+    charset: "ascii",
+  },
   build: {
     rollupOptions: {
       input: ["./index.html", "@molgenis/vite-plugin-inline/src/loader.ts"],
