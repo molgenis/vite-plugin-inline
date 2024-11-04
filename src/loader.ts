@@ -17,6 +17,7 @@ function decodeScript(script: HTMLScriptElement): void {
     const className = script.className;
     if (className === "ldr-js") {
       element = doc.createElement("script");
+      element.setAttribute("type", "module");
     } else if (className === "ldr-css") {
       element = doc.createElement("style");
     } else {
