@@ -1,6 +1,8 @@
 os: linux
 dist: jammy
 language: node_js
+env:
+  - COREPACK_INTEGRITY_KEYS=0 # workaround for https://github.com/nodejs/corepack/issues/627
 node_js:
   - 22
 branches:
