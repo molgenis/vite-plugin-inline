@@ -2,14 +2,14 @@ const encodeMap: string[] =
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~".split("");
 
 function toAscii(val: number): string {
-  return encodeMap[val % 85];
+  return encodeMap[val % 85]!;
 }
 
 function getUint32BigEndianPadding(byteArray: Uint8Array, offset: number): number {
-  const b0 = byteArray[offset];
-  const b1 = offset + 1 < byteArray.length ? byteArray[offset + 1] : 0;
-  const b2 = offset + 2 < byteArray.length ? byteArray[offset + 2] : 0;
-  const b3 = offset + 3 < byteArray.length ? byteArray[offset + 3] : 0;
+  const b0 = byteArray[offset]!;
+  const b1 = offset + 1 < byteArray.length ? byteArray[offset + 1]! : 0;
+  const b2 = offset + 2 < byteArray.length ? byteArray[offset + 2]! : 0;
+  const b3 = offset + 3 < byteArray.length ? byteArray[offset + 3]! : 0;
   return ((b0 << 24) >>> 0) + ((b1 << 16) | (b2 << 8) | b3);
 }
 
@@ -50,7 +50,7 @@ const decodeMap: Uint8Array = new Uint8Array([
 ]);
 
 function fromAscii(str: string, offset: number, exponent: number): number {
-  return (offset < str.length ? decodeMap[str.charCodeAt(offset) - 33] : 84) * Math.pow(85, exponent);
+  return (offset < str.length ? decodeMap[str.charCodeAt(offset) - 33]! : 84) * Math.pow(85, exponent);
 }
 
 function toUint32(str: string, offset: number): number {
