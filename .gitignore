@@ -1,5 +1,7 @@
 node_modules
 dist
+dist-generate
 /.idea/
 coverage
 /.vscode/
+src/generated

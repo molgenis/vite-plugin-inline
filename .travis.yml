@@ -20,9 +20,9 @@ before_install:
 install:
   - pnpm install
 script:
+  - pnpm run build
   - pnpm run lint
   - pnpm run coverage
-  - pnpm run build
 deploy:
   provider: script
   script: bash scripts/deploy_npm_registry.sh

@@ -1,35 +1,58 @@
 import { dec } from "./Base85";
-import { gunzipSync } from "fflate";
+import { ZSTD_DECOMPRESS_WASM_BASE85 } from "./generated/zstd_decompress_wasm";
+import { createZstdDecompressor } from "./zstd_decompress";
 
-const doc = document;
-const textDecoder = new TextDecoder("utf-8");
+async function runLoader() {
+  const doc = document;
 
-/**
- * Replace script tag with compressed data with script tag with uncompressed data
- */
-function decodeScript(script: HTMLScriptElement): void {
-  const text = script.textContent;
-  if (text !== null) {
-    const textDecoded = textDecoder.decode(gunzipSync(dec(text)));
-    // see https://github.com/v8/v8/commit/ea56bf5513d0cbd2a35a9035c5c2996272b8b728
-    if (textDecoded.length === 0) throw new Error("maximum string length exceeded");
-    let element: HTMLElement;
-    const className = script.className;
-    if (className === "ldr-js") {
-      element = doc.createElement("script");
-      element.setAttribute("type", "module");
-    } else if (className === "ldr-css") {
-      element = doc.createElement("style");
-    } else {
-      throw new Error(`unknown class '${className}'`);
-    }
-    element.textContent = textDecoded;
-    script.replaceWith(element);
+  // step 0: get compressed script tags
+  const scripts = Array.from(doc.querySelectorAll<HTMLScriptElement>("script[type='application/zstd']"));
+  if (scripts.length === 0) {
+    return;
   }
+
+  // step 1: calc mem required for decompressor
+  let maxMemory = 0;
+  scripts.forEach((script) => {
+    const cSize = Number(script.dataset.csize);
+    const dSize = Number(script.dataset.dsize);
+    if (isNaN(cSize) || isNaN(dSize)) {
+      throw new Error("missing or invalid data-csize / data-dsize on script tag");
+    }
+
+    maxMemory = Math.max(maxMemory, cSize + dSize);
+  });
+
+  // step 2: create decompressor
+  const wasmBuffer = dec(ZSTD_DECOMPRESS_WASM_BASE85) as BufferSource;
+  const zstd = await createZstdDecompressor(wasmBuffer, maxMemory);
+  const utf8Decoder = new TextDecoder("utf-8");
+
+  // step 3: decompress script tags
+  await Promise.all(
+    scripts.map(async (script) => {
+      const decompressedSize = Number(script.dataset.dsize);
+      const decompressed = zstd.decompress(dec(script.textContent), decompressedSize);
+
+      let element: HTMLElement;
+      const cls = script.className;
+      if (cls === "ldr-js") {
+        element = doc.createElement("script");
+        element.setAttribute("type", "module");
+      } else if (cls === "ldr-css") {
+        element = doc.createElement("style");
+      } else {
+        throw new Error(`unknown class '${cls}'`);
+      }
+
+      element.textContent = utf8Decoder.decode(decompressed);
+      script.replaceWith(element);
+    }),
+  );
+
+  // step 4: cleanup
+  zstd.destroy();
+  doc.getElementById("ldr")?.remove();
 }
 
-// decode js and css
-doc.querySelectorAll("script[type='application/gzip']").forEach((script) => decodeScript(script as HTMLScriptElement));
-
-// remove loader
-doc.getElementById("ldr")?.remove();
+runLoader().catch((err) => console.error("loader failed", err));
