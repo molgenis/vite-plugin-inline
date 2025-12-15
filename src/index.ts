@@ -1,13 +1,8 @@
 import { HtmlTagDescriptor, IndexHtmlTransformContext, IndexHtmlTransformResult, Plugin } from "vite";
-import { gzipSync } from "fflate";
-import { enc } from "./Base85";
+import { dec, enc } from "./Base85";
 import { OutputAsset, OutputChunk } from "./rollup";
-
-function compress(str: string): string {
-  const byteArray = Uint8Array.from(str, (v) => v.charCodeAt(0));
-  const byteArrayCompressed = gzipSync(byteArray, { level: 9 });
-  return enc(byteArrayCompressed);
-}
+import { ZSTD_COMPRESS_WASM_BASE85 } from "./generated/zstd_compress_wasm";
+import { createZstdCompressor, ZstdCompressor } from "./zstd_compress";
 
 function createLoaderTag(html: string, chunk: OutputChunk): HtmlTagDescriptor {
   const prefix = "(function() {";
@@ -21,15 +16,19 @@ function createLoaderTag(html: string, chunk: OutputChunk): HtmlTagDescriptor {
   };
 }
 
-function inlineJs(html: string, chunk: OutputChunk): string {
+async function inlineJs(html: string, chunk: OutputChunk, zstdCompressor: ZstdCompressor): Promise<string> {
   const regExp = new RegExp(`<script type="module"[^>]*?src="/?${chunk.fileName}"[^>]*?></script>`);
-  const code = `<script type="application/gzip" class="ldr-js">${compress(chunk.code)}</script>`;
+  const src = Uint8Array.from(chunk.code, (v) => v.charCodeAt(0));
+  const bytes = zstdCompressor.compress(src);
+  const code = `<script type="application/zstd" class="ldr-js" data-csize="${bytes.length}" data-dsize="${src.length}">${enc(bytes)}</script>`;
   return html.replace(regExp, () => code);
 }
 
-function inlineCss(html: string, asset: OutputAsset): string {
+async function inlineCss(html: string, asset: OutputAsset, zstdCompressor: ZstdCompressor): Promise<string> {
   const regExp = new RegExp(`<link rel="stylesheet"[^>]*?href="/?${asset.fileName}"[^>]*?>`);
-  const code = `<script type="application/gzip" class="ldr-css">${compress(asset.source as string)}</script>`;
+  const src = Uint8Array.from(asset.source as string, (v) => v.charCodeAt(0));
+  const bytes = zstdCompressor.compress(src);
+  const code = `<script type="application/zstd" class="ldr-css" data-csize="${bytes.length}" data-dsize="${src.length}">${enc(bytes)}</script>`;
   return html.replace(regExp, () => code);
 }
 
@@ -38,22 +37,27 @@ export default function inline(): Plugin {
     name: "vite:inline",
     transformIndexHtml: {
       order: "post",
-      handler(html: string, ctx?: IndexHtmlTransformContext): IndexHtmlTransformResult {
+      async handler(html: string, ctx?: IndexHtmlTransformContext): Promise<IndexHtmlTransformResult> {
         if (!ctx || !ctx.bundle) return html;
 
-        const tags = [];
-        for (const [, value] of Object.entries(ctx.bundle)) {
-          if (value.fileName.match(/assets\/loader-.*\.js/)) {
-            tags.push(createLoaderTag(html, value as OutputChunk));
-          } else if (value.fileName.match(/assets\/index-.*\.js/)) {
-            html = inlineJs(html, value as OutputChunk);
-          } else if (value.fileName.match(/assets\/index-.*\.css/)) {
-            html = inlineCss(html, value as unknown as OutputAsset);
+        const zstdCompressor = await createZstdCompressor(dec(ZSTD_COMPRESS_WASM_BASE85) as BufferSource);
+        try {
+          const tags = [];
+          for (const [, value] of Object.entries(ctx.bundle)) {
+            if (value.fileName.match(/assets\/loader-.*\.js/)) {
+              tags.push(createLoaderTag(html, value as OutputChunk));
+            } else if (value.fileName.match(/assets\/index-.*\.js/)) {
+              html = await inlineJs(html, value as OutputChunk, zstdCompressor);
+            } else if (value.fileName.match(/assets\/index-.*\.css/)) {
+              html = await inlineCss(html, value as unknown as OutputAsset, zstdCompressor);
+            }
+            // prevent rollup from outputting inline bundles
+            delete ctx.bundle[value.fileName];
           }
-          // prevent rollup from outputting inline bundles
-          delete ctx.bundle[value.fileName];
+          return { html, tags };
+        } finally {
+          zstdCompressor.destroy();
         }
-        return { html, tags };
       },
     },
   };

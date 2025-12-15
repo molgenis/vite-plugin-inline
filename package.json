@@ -1,19 +1,18 @@
 {
   "name": "@molgenis/vite-plugin-inline",
-  "version": "1.0.30",
+  "version": "2.0.0",
   "description": "Vite plugin that embeds .js and .css as base85 data ",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
+      "types": "./dist/plugin/index.d.ts",
+      "import": "./dist/plugin/index.mjs"
+    },
+    "./loader": "./dist/loader/loader.js"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "module": "./dist/plugin/index.mjs",
+  "types": "./dist/plugin/index.d.ts",
   "files": [
     "dist"
   ],
@@ -22,10 +21,13 @@
     "vite-plugin"
   ],
   "scripts": {
-    "build": "unbuild",
+    "generate": "node scripts/generate_wasm_wrappers.mjs",
+    "prebuild": "pnpm run generate && tsc",
+    "build": "node build-plugin.mjs && node build-loader.mjs",
     "prepack": "pnpm build",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts",
+    "pretest": "pnpm run generate && tsc",
     "test": "vitest run --config vitest.config.mts",
     "test:watch": "vitest --config vitest.config.mts",
     "coverage": "vitest --config vitest.config.mts run --coverage",
@@ -53,18 +55,14 @@
     "@eslint/js": "^9.39.1",
     "@types/node": "^22.19.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "esbuild": "^0.27.1",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.48.0",
-    "unbuild": "^3.6.1",
-    "vite": "^6.4.1",
     "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "fflate": "^0.8.2"
   },
   "peerDependencies": {
     "vite": "^6.4.1"
