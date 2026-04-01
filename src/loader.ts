@@ -14,8 +14,8 @@ async function runLoader() {
   // step 1: calc mem required for decompressor
   let maxMemory = 0;
   scripts.forEach((script) => {
-    const cSize = Number(script.dataset.csize);
-    const dSize = Number(script.dataset.dsize);
+    const cSize = Number(script.dataset["csize"]);
+    const dSize = Number(script.dataset["dsize"]);
     if (isNaN(cSize) || isNaN(dSize)) {
       throw new Error("missing or invalid data-csize / data-dsize on script tag");
     }
@@ -31,7 +31,7 @@ async function runLoader() {
   // step 3: decompress script tags
   await Promise.all(
     scripts.map(async (script) => {
-      const decompressedSize = Number(script.dataset.dsize);
+      const decompressedSize = Number(script.dataset["dsize"]);
       const decompressed = zstd.decompress(dec(script.textContent), decompressedSize);
 
       let element: HTMLElement;
