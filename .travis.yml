@@ -1,10 +1,9 @@
+arch: amd64
 os: linux
-dist: jammy
+dist: noble
 language: node_js
-env:
-  - COREPACK_INTEGRITY_KEYS=0 # workaround for https://github.com/nodejs/corepack/issues/627
 node_js:
-  - 22
+  - 24
 branches:
   only:
     - main
@@ -15,7 +14,7 @@ cache:
     - "~/.pnpm-store"
 before_install:
   - corepack enable
-  - corepack prepare pnpm@latest-9 --activate
+  - corepack prepare pnpm@latest-10 --activate
   - pnpm config set store-dir ~/.pnpm-store
 install:
   - pnpm install

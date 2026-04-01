@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
-    "strict": true,
     "target": "ES2022",
     "moduleResolution": "bundler",
+    "noEmit": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
-    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
-    "noEmit": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   }
 }

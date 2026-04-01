@@ -4,7 +4,7 @@ import { OutputAsset, OutputChunk } from "./rollup";
 import { ZSTD_COMPRESS_WASM_BASE85 } from "./generated/zstd_compress_wasm";
 import { createZstdCompressor, ZstdCompressor } from "./zstd_compress";
 
-function createLoaderTag(html: string, chunk: OutputChunk): HtmlTagDescriptor {
+function createLoaderTag(_: string, chunk: OutputChunk): HtmlTagDescriptor {
   const prefix = "(function() {";
   const code = chunk.code.trim();
   const postfix = "})();";
@@ -45,9 +45,9 @@ export default function inline(): Plugin {
           const tags = [];
           for (const [, value] of Object.entries(ctx.bundle)) {
             if (value.fileName.match(/assets\/loader-.*\.js/)) {
-              tags.push(createLoaderTag(html, value as OutputChunk));
+              tags.push(createLoaderTag(html, value as unknown as OutputChunk));
             } else if (value.fileName.match(/assets\/index-.*\.js/)) {
-              html = await inlineJs(html, value as OutputChunk, zstdCompressor);
+              html = await inlineJs(html, value as unknown as OutputChunk, zstdCompressor);
             } else if (value.fileName.match(/assets\/index-.*\.css/)) {
               html = await inlineCss(html, value as unknown as OutputAsset, zstdCompressor);
             }
